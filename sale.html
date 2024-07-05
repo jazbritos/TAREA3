@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DIC cafe</title>
+    <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/sale.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <section class="section_inner">
+      <div class="section_title">
+        <h1>Venta de granos de café</h1>
+      </div>
+    </section>
+
+    <section class="section_inner menu_section">
+      <div class="center">
+        <h1 class="menu_title">Línea de productos</h1>
+      </div>
+      <ul class="menu_list coffee_menu">
+        <li class="caffee_menu_list_item">
+          <div class="caffee_menu_content">
+            <h2 class="menu_item_title">Mezcla original 200g</h2>
+            <p class="caffee_menu_price">500 yenes</p>
+          </div>
+          <img src="images/sample_cafe1.jpg" class="caffee_menu_image">
+        </li>
+        <li class="caffee_menu_list_item">
+          <div class="caffee_menu_content">
+            <h2 class="menu_item_title">Mezcla original 500g</h2>
+            <p class="caffee_menu_price">900 yenes</p>
+          </div>
+          <img src="images/sample_cafe1.jpg" class="caffee_menu_image">
+        </li>
+        <li class="caffee_menu_list_item">
+          <div class="caffee_menu_content">
+            <h2 class="menu_item_title">Mezcla especial 200g</h2>
+            <p class="caffee_menu_price">700 yenes</p>
+          </div>
+          <img src="images/sample_cafe3.jpg" class="caffee_menu_image">
+        </li>
+        <li class="caffee_menu_list_item">
+          <div class="caffee_menu_content">
+            <h2 class="menu_item_title">Mezcla especial 500g</h2>
+            <p class="caffee_menu_price">1200 yenes</p>
+          </div>
+          <img src="images/sample_cafe3.jpg" class="caffee_menu_image">
+        </li>
+      </ul>
+      <h2>Información sobre los gastos de envío</h2>
+      <ul>
+        <li>・Gastos de envío de 500 yenes si el total es menos de 2000 yenes</li>
+        <li>・250 yenes si el total es más de 2000 yenes</li>
+        <li>・Gratis si el total es más de 3000 yenes</li>
+      </ul>
+    </section>
+
+    <section class="section_inner">
+      <h2>Pedido</h2>
+      <form>
+        <p>Por favor seleccione el producto</p>
+        <div>
+          <select id="product" required>
+            <option hidden value="0">Por favor seleccione</option>
+            <option value="500" data-name="Mezcla original 200g">Mezcla original 200g 500 yenes</option>
+            <option value="900" data-name="Mezcla original 500g">Mezcla original 500g 900 yenes</option>
+            <option value="700" data-name="Mezcla especial 200g">Mezcla especial 200g 700 yenes</option>
+            <option value="1200" data-name="Mezcla especial 500g">Mezcla especial 500g 1200 yenes</option>
+          </select>
+          <p>Por favor seleccione la cantidad</p>
+          <select id="number" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+        <br>
+        <input type="button" class="btn" value="Añadir" onclick="add()">
+        <input type="button" class="btn" value="Monto total" onclick="calc()">
+      </form>
+      <div id="orderSummary"></div>
+    </section>
+  
+    <script type="text/javascript">
+      const priceElement = document.getElementById("product");
+      const numberElement = document.getElementById("number");
+      const orderSummaryElement = document.getElementById("orderSummary");
+      let purchases = [];
+
+      function add() {
+        const price = parseInt(priceElement.value);
+        const number = parseInt(numberElement.value);
+        const productName = priceElement.options[priceElement.selectedIndex].getAttribute('data-name');
+
+        if (price && number && productName) {
+          let purchase = {
+            price: price,
+            number: number,
+            name: productName
+          };
+
+          purchases.push(purchase);
+          alert(`Producto añadido:\nNombre: ${productName}\nCantidad: ${number}`);
+        } else {
+          alert("Por favor seleccione un producto y una cantidad válida.");
+        }
+      }
+
+      function updateOrderSummary() {
+        let summary = "Resumen del pedido:\n";
+
+        for (let i = 0; i < purchases.length; i++) {
+          summary += `${purchases[i].name} - ${purchases[i].number} x ${purchases[i].price} yenes\n`;
+        }
+
+        alert(summary);
+      }
+
+      function calc() {
+        let subtotal = 0;
+
+        for (let i = 0; i < purchases.length; i++) {
+          subtotal += purchases[i].price * purchases[i].number;
+        }
+
+        let shipping = 0;
+        if (subtotal < 2000) {
+          shipping = 500;
+        } else if (subtotal < 3000) {
+          shipping = 250;
+        }
+
+        const total = subtotal + shipping;
+
+        let details = "Detalles del pedido:\n";
+        for (let i = 0; i < purchases.length; i++) {
+          details += `Producto: ${purchases[i].name}, Precio: ${purchases[i].price} yenes, Cantidad: ${purchases[i].number}\n`;
+        }
+
+        details += `Subtotal: ${subtotal} yenes\n`;
+        details += `Gastos de envío: ${shipping} yenes\n`;
+        details += `Importe total: ${total} yenes\n`;
+
+        alert(details);
+        
+        // Reset
+        purchases = [];
+        priceElement.value = "0";
+        numberElement.value = "1";
+        orderSummaryElement.innerHTML = "";
+      }
+    </script>
+
+    <footer class="footer">
+      <nav>
+        <ul class="footer_nav">
+          <a href="index.html" class="footer_nav_item">
+            <li>Home</li>
+          </a>
+          <a href="#menu" class="footer_nav_item">
+            <li>Menu</li>
+          </a>
+          <a href="contact.html" class="footer_nav_item">
+            <li>Contact</li>
+          </a>
+          <a href="index.html" class="footer_nav_item">
+            <li>
+              <img src="images/sample_logo_w.png" class="footer_logo">
+            </li>
+          </a>
+        </ul>
+      </nav>
+      <p class="footer_right">© DIVIC Corp. All RIGHTS RESERVED.</p>
+    </footer>
+  </body>
+</html>
